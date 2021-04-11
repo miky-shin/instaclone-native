@@ -7,9 +7,18 @@ import CreateAccount from "../screens/CreateAccount";
 const Stack = createStackNavigator();
 
 export default function LoggedOutNav() {
-  return <Stack.Navigator>
+  return (
+    <Stack.Navigator
+      screenOptions={{ headerBackTitleVisible: false }}
+      headerMode="screen"
+    >
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="LogIn" component={LogIn} />
-      <Stack.Screen name="Create Account" component={CreateAccount} />
-  </Stack.Navigator>;
+      <Stack.Screen
+        name="Create Account"
+        options={{ headerBackTitleVisible: false }}
+        component={CreateAccount}
+      />
+    </Stack.Navigator>
+  );
 }
