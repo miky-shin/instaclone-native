@@ -1,9 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
+import styled from "styled-components/native";
+import { colors } from "../colors";
+import AuthButton from "../components/auth/AuthButton";
+import AuthLayout from "../components/auth/AuthLayout";
+
+
 export default function CreateAccount() {
   return (
-    <View>
-      <Text>CreateAccount</Text>
-    </View>
+    <AuthLayout>
+      <AuthButton text="Create Account" disabled={true} onPress={null}></AuthButton>
+    </AuthLayout>
   );
 }
