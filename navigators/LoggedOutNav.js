@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 export default function LoggedOutNav() {
   return <Stack.Navigator>
       <Stack.Screen name="Welcome" component={Welcome} />
-      <Stack.Screen name="Login" component={LogIn} />
-      <Stack.Screen name="CreateAccount" component={CreateAccount} />
+      <Stack.Screen name="LogIn" component={LogIn} />
+      <Stack.Screen name="Create Account" component={CreateAccount} />
   </Stack.Navigator>;
 }

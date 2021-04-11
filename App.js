@@ -28,6 +28,9 @@ export default function App() {
       />
     );
   }
-  return (<NavigationContainer><LoggedOutNav /></NavigationContainer>)
+  return (
+    <NavigationContainer>
+      <LoggedOutNav />
+    </NavigationContainer>
+  );
 }
-
