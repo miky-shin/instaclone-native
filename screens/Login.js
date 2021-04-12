@@ -3,6 +3,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
+import { Keyboard } from "react-native";
 import { isLoggedInVar } from "../apollo";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
@@ -21,6 +22,9 @@ const LOGIN_MUTATION = gql`
 export default function LogIn({ navigation }) {
   const { register, handleSubmit, setValue, watch } = useForm();
   const passwordRef = useRef();
+  const dismmissKeyboard = () => {
+    Keyboard.dismiss();
+  }
   const onCompleted = (data) => {
     const {
       login: { ok, token },
@@ -66,7 +70,7 @@ export default function LogIn({ navigation }) {
         secureTextEntry
         returnKeyType="done"
         lastOne={true}
-        onSubmitEditing={handleSubmit(onValid)}
+        onSubmitEditing={dismmissKeyboard}
         placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
         onChangeText={(text) => setValue("password", text)}
       />

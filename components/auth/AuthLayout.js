@@ -40,7 +40,7 @@ export default function AuthLayout({ children }) {
             alignItems: "center",
           }}
           behavior="padding"
-          keyboardVerticalOffset={30}
+          keyboardVerticalOffset={70}
           placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
         >
           <Logo
