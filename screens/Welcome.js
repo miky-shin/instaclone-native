@@ -17,10 +17,7 @@ export default function Welcome({ navigation }) {
   return (
     <AuthLayout>
       <AuthButton text="Create New Account" disabled={false} onPress={goToCreateAccount}>
-      
       </AuthButton>
-
-
       <TouchableOpacity onPress={goToLogIn}>
         <LoginLink>Log in</LoginLink>
       </TouchableOpacity>
