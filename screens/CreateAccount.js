@@ -30,18 +30,22 @@ const CREATE_ACCOUNT_MUTATION = gql`
 `;
 
 export default function CreateAccount({ navigation }) {
-  const { register, handleSubmit, setValue, watch } = useForm();
+  const { register, handleSubmit, setValue, getValues, watch } = useForm({});
+
   const dismmissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const goToLogIn = () => navigation.navigate("LogIn");
   const onCompleted = (data) => {
     console.log(data);
     const {
       createAccount: { ok },
     } = data;
+    const { username, password } = getValues();
     if (ok) {
-      goToLogIn();
+      navigation.navigate("LogIn", {
+        username,
+        password,
+      });
     }
   };
   const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
@@ -127,8 +131,10 @@ export default function CreateAccount({ navigation }) {
           !watch("lastName") ||
           !watch("username") ||
           !watch("email") ||
-          !watch("password")
+          !watch("password") ||
+          loading
         }
+        loading={loading}
         onPress={handleSubmit(onValid)}
       ></AuthButton>
     </AuthLayout>
