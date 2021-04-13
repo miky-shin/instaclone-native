@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard } from "react-native";
-import { isLoggedInVar } from "../apollo";
+import { isLoggedInVar, logUserIn } from "../apollo";
 import AuthButton from "../components/auth/AuthButton";
 import AuthLayout from "../components/auth/AuthLayout";
 import { TextInput } from "../components/auth/AuthShared";
@@ -30,12 +30,12 @@ export default function LogIn({ route: { params } }) {
   const dismmissKeyboard = () => {
     Keyboard.dismiss();
   };
-  const onCompleted = (data) => {
+  const onCompleted = async (data) => {
     const {
       login: { ok, token },
     } = data;
     if (ok) {
-      isLoggedInVar(true);
+      await logUserIn(token);
     }
   };
   const [logInmutation, { loading }] = useMutation(LOGIN_MUTATION, {
