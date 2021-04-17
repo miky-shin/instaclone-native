@@ -1,7 +1,37 @@
+import { gql, useQuery } from "@apollo/client";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
+import { COMMENT_FRAGMENT } from "../components/fragments";
+
+export const FEED_QUERY = gql`
+  query seeFeed {
+    seeFeed {
+      id
+      user {
+        username
+        avatar
+      }
+      file
+      caption
+      likes
+      commentNumber
+      comments {
+        ...CoomentFragment
+      }
+      createdAt
+      isMine
+      isLiked
+    }
+  }
+  ${COMMENT_FRAGMENT}
+`;
+
 
 export default function Feed({navigation}) {
+
+  const {data} = useQuery(FEED_QUERY);
+  console.log(data);
+
   return (
     <View
       style={{
