@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { logUserOut } from "../apollo";
 
 export default function Me() {
   return (
@@ -7,11 +8,13 @@ export default function Me() {
       style={{
         backgroundColor: "black",
         flex: 1,
-        alignItems: "center",//열 중앙
+        alignItems: "center", //열 중앙
         justifyContent: "center", //행 중앙
       }}
     >
-      <Text style={{ color: "white" }}>Me</Text>
+      <TouchableOpacity onPress={() => logUserOut()}>
+        <Text style={{ color: "white" }}>Log out</Text>
+      </TouchableOpacity>
     </View>
   );
 }
