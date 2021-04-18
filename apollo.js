@@ -1,6 +1,11 @@
-import { ApolloClient, createHttpLink, InMemoryCache, makeVar } from "@apollo/client";
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+  makeVar,
+} from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {setContext} from "@apollo/client/link/context"
+import { setContext } from "@apollo/client/link/context";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -17,32 +22,46 @@ export const logUserIn = async (token) => {
   tokenVar(token);
 };
 
-export const logUserOut = async() => {
+export const logUserOut = async () => {
   await AsyncStorage.removeItem(TOKEN);
   isLoggedInVar(false);
   tokenVar(null);
-}
+};
 
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
 
   // uri: "https://big-deer-97.loca.lt/graphql",
+});
 
-})
-
-const authLink = setContext((_, {headers}) => {
+const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      token: tokenVar()
-    }
-  }
-})
+      token: tokenVar(),
+    },
+  };
+});
 const client = new ApolloClient({
   //uri: "http://localhost:4000/graphql",
   //uri: "http://164355d0fe93.ngrok.io/graphql"
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Query: {
+        fields: {
+          seeFeed: 
+          //offsetLimitPagination(), : shortcut...
+          {
+            keyArgs: false,
+            merge(existing = [], incoming = []) {
+              return [...existing, ...incoming];
+            },
+          },
+        },
+      },
+    },
+  }),
 });
 
 export default client;
