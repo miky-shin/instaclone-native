@@ -1,13 +1,7 @@
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Feed from "../screens/Feed";
-import Search from "../screens/Search";
-import Notifications from "../screens/Notifications";
-import Profile from "../screens/Profile";
 import { View } from "react-native";
 import TabIcon from "../components/nav/TabIcon";
-import Me from "../screens/Me";
 import SharedStackNav from "./SharedStackNav";
 
 const Tabs = createBottomTabNavigator();

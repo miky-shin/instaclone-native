@@ -36,8 +36,8 @@ export default function Feed() {
     },
   });
   const renderPhoto = ({ item: photo }) => {
-    console.log(photo.id);
-    return <Photo {...photo} />;
+    
+    return <Photo key={photo.id}{...photo} />;
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -46,6 +46,7 @@ export default function Feed() {
     await refetch();
     setRefreshing(false);
   };
+  if(!loading){
 
   return (
     <ScreenLayout loading={loading}>
@@ -68,4 +69,5 @@ export default function Feed() {
       />
     </ScreenLayout>
   );
+      }
 }
