@@ -11,7 +11,7 @@ export const PHOTO_FRAGMENT = gql`
 `;
 
 export const COMMENT_FRAGMENT = gql`
-  fragment CoomentFragment on Comment {
+  fragment CommentFragment on Comment {
     id
     user {
       username

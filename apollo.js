@@ -24,7 +24,9 @@ export const logUserOut = async() => {
 }
 
 const httpLink = createHttpLink({
-  uri: "https://big-deer-97.loca.lt/graphql",
+  uri: "http://localhost:4000/graphql",
+
+  // uri: "https://big-deer-97.loca.lt/graphql",
 
 })
 
