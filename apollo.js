@@ -30,9 +30,9 @@ export const logUserOut = async () => {
 };
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000/graphql",
+  //uri: "http://localhost:4000/graphql",
 
-  // uri: "https://big-deer-97.loca.lt/graphql",
+   uri: "https://itchy-snail-21.loca.lt/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -44,6 +44,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+//apollo3-cache-persist 설치하고 export
 export const cache = new InMemoryCache({
   typePolicies: {
     Query: {
