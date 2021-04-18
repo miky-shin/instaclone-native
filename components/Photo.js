@@ -4,6 +4,16 @@ import PropTypes from "prop-types";
 import styled from "styled-components/native";
 import { Image, TouchableOpacity, useWindowDimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { gql, useMutation } from "@apollo/client";
+
+const TOGGLE_LIKE_MUTATION = gql`
+  mutation toggleLike($id: Int!) {
+    toggleLike(id: $id) {
+      ok
+      error
+    }
+  }
+`;
 
 const Container = styled.View``;
 const Header = styled.View`
@@ -36,7 +46,10 @@ const CaptionText = styled.Text`
   color: white;
   margin-left: 5px;
 `;
-const Likes = styled.Text`
+const Likes = styled.View`
+  flex-direction: row;
+`;
+const LikesNum = styled.Text`
   color: white;
   margin: 7px 0px;
   font-weight: 600;
@@ -53,6 +66,35 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
     Image.getSize(file, (imageWidth, imageHeight) => {
       setImageHeight((imageHeight * width) / imageWidth);
     });
+  });
+
+  const updateToggleLike = (cache, result) => {
+    const {
+      data: {
+        toggleLike: { ok },
+      },
+    } = result;
+    if (ok) {
+      cache.writeFragment({
+        id: `Photo:${id}`,
+        fragment: gql`
+          fragment BSName on Photo {
+            isLiked
+            likes
+          }
+        `,
+        data: {
+          isLiked: !isLiked,
+          likes: isLiked ? likes - 1 : likes + 1,
+        },
+      });
+    }
+  };
+  const [toggleLike] = useMutation(TOGGLE_LIKE_MUTATION, {
+    variables: {
+      id,
+    },
+    update: updateToggleLike,
   });
   return (
     <Container>
@@ -73,6 +115,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
         <Actions>
           <Action>
             <Ionicons
+              onPress={() => toggleLike()}
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : "white"}
               size={20}
@@ -82,9 +125,11 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
             <Ionicons name="chatbubble-outline" color="white" size={19} />
           </Action>
         </Actions>
-        <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
-          <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
-        </TouchableOpacity>
+        <Likes>
+          <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+            <LikesNum>{likes === 1 ? "1 like" : `${likes} likes`}</LikesNum>
+          </TouchableOpacity>
+        </Likes>
         <Caption>
           <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <Username>{user.username}</Username>

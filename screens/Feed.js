@@ -36,6 +36,7 @@ export default function Feed() {
     },
   });
   const renderPhoto = ({ item: photo }) => {
+    console.log(photo.id);
     return <Photo {...photo} />;
   };
 
@@ -62,8 +63,8 @@ export default function Feed() {
         style={{ width: "100%" }}
         showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
-        keyExtractor={(comment) => "" + comment.id}
         renderItem={renderPhoto}
+        keyExtractor={(photo) => `${photo.id}`}
       />
     </ScreenLayout>
   );

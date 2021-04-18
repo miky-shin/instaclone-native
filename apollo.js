@@ -6,6 +6,7 @@ import {
 } from "@apollo/client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { setContext } from "@apollo/client/link/context";
+import { offsetLimitPagination } from "@apollo/client/utilities";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -42,26 +43,30 @@ const authLink = setContext((_, { headers }) => {
     },
   };
 });
+
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        seeFeed: offsetLimitPagination(),
+      },
+    },
+  },
+});
+
 const client = new ApolloClient({
   //uri: "http://localhost:4000/graphql",
   //uri: "http://164355d0fe93.ngrok.io/graphql"
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache({
-    typePolicies: {
-      Query: {
-        fields: {
-          seeFeed: 
-          //offsetLimitPagination(), : shortcut...
-          {
-            keyArgs: false,
-            merge(existing = [], incoming = []) {
-              return [...existing, ...incoming];
-            },
-          },
-        },
-      },
-    },
-  }),
+  cache,
+          // {
+          //   keyArgs: false,
+          //   merge(existing = [], incoming = []) {
+          //     console.log(existing, incoming);
+          //     return [...existing, ...incoming];
+          //   },
+          // },
+
 });
 
 export default client;
