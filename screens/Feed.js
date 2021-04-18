@@ -1,5 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import React from "react";
+import { useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../components/fragments";
 import Photo from "../components/Photo";
@@ -29,14 +30,23 @@ export const FEED_QUERY = gql`
 `;
 
 export default function Feed() {
-  const { data, loading } = useQuery(FEED_QUERY);
+  const { data, loading, refetch } = useQuery(FEED_QUERY);
   const renderPhoto = ({ item: photo }) => {
     return <Photo {...photo} />;
   };
 
+  const refresh = async () => {
+    setrefreshing(true);
+    await refetch();
+    setrefreshing(false);
+  }
+  const [refreshing, setrefreshing] = useState(false);
+
   return (
     <ScreenLayout loading={loading}>
       <FlatList
+        refreshing={refreshing}
+        onRefresh={refresh}
         style={{ width: "100%" }}
         showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
