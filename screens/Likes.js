@@ -1,19 +1,47 @@
+import { gql, useQuery } from "@apollo/client";
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { useState } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { USER_FRAGMENT } from "../components/fragments";
+import ScreenLayout from "../components/ScreenLayout";
+import UserRow from "../components/UserRow";
 
-export default function Likes() {
+const LIKES_QUERY = gql`
+  query seePhotoLikes($id: Int!) {
+    seePhotoLikes(id: $id) {
+      ...UserFragment
+    }
+  }
+  ${USER_FRAGMENT}
+`;
+
+export default function Likes({ route }) {
+  const { data, loading, refetch } = useQuery(LIKES_QUERY, {
+    variables: {
+      id: route?.params?.photoId,
+    },
+    skip: !route.params?.photoId,
+  });
+
+  const renderUser = ({ item: user }) => <UserRow {...user} />;
+
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await refetch();
+    setRefreshing(false);
+  };
+
   return (
-    <View
-      style={{
-        backgroundColor: "black",
-        flex: 1,
-        alignItems: "center", //열 중앙
-        justifyContent: "center", //행 중앙
-      }}
-    >
-      <TouchableOpacity>
-        <Text style={{ color: "white" }}>Likes</Text>
-      </TouchableOpacity>
-    </View>
+    <ScreenLayout loading={loading}>
+      <FlatList
+        refreshing={refreshing}
+        onRefresh={refresh}
+        data={data?.seePhotoLikes}
+        keyExtractor={(item) => item.username}
+        renderItem={renderUser}
+        style={{ width: "100%" }}
+      />
+    </ScreenLayout>
   );
 }

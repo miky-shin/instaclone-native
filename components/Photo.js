@@ -96,13 +96,19 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
     },
     update: updateToggleLike,
   });
+  const goToProfile = () => {
+    navigation.navigate("Profile", {
+      username: user.username,
+      id: user.id,
+    });
+  };
   return (
     <Container>
       <Header>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity onPress={goToProfile}>
           <UserAvatar resizeMode="cover" source={{ uri: user.avatar }} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+        <TouchableOpacity onPress={goToProfile}>
           <Username>{user.username}</Username>
         </TouchableOpacity>
       </Header>
@@ -126,12 +132,18 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
           </Action>
         </Actions>
         <Likes>
-          <TouchableOpacity onPress={() => navigation.navigate("Likes")}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("Likes", {
+                photoId: id,
+              })
+            }
+          >
             <LikesNum>{likes === 1 ? "1 like" : `${likes} likes`}</LikesNum>
           </TouchableOpacity>
         </Likes>
         <Caption>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={goToProfile}>
             <Username>{user.username}</Username>
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
@@ -144,6 +156,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
 Photo.propTypes = {
   id: PropTypes.number.isRequired,
   user: PropTypes.shape({
+    id: PropTypes.number.isRequired,
     avatar: PropTypes.string,
     username: PropTypes.string.isRequired,
   }),

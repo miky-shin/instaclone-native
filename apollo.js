@@ -15,10 +15,7 @@ const TOKEN = "token";
 
 export const logUserIn = async (token) => {
   //await AsyncStorage.setItem("token", JSON.stringify(token));
-  await AsyncStorage.multiSet([
-    [TOKEN, token],
-    ["loggedIn", "yse"],
-  ]);
+  await AsyncStorage.setItem(TOKEN, token);
   isLoggedInVar(true);
   tokenVar(token);
 };
@@ -32,7 +29,7 @@ export const logUserOut = async () => {
 const httpLink = createHttpLink({
   //uri: "http://localhost:4000/graphql",
 
-   uri: "https://itchy-snail-21.loca.lt/graphql",
+  uri: "https://heavy-eagle-6.loca.lt/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {

@@ -10,6 +10,7 @@ export const FEED_QUERY = gql`
   query seeFeed($offset: Int) {
     seeFeed(offset: $offset) {
       user {
+        id
         username
         avatar
       }
@@ -36,8 +37,7 @@ export default function Feed() {
     },
   });
   const renderPhoto = ({ item: photo }) => {
-    
-    return <Photo key={photo.id}{...photo} />;
+    return <Photo {...photo} />;
   };
 
   const [refreshing, setRefreshing] = useState(false);
@@ -46,7 +46,6 @@ export default function Feed() {
     await refetch();
     setRefreshing(false);
   };
-  if(!loading){
 
   return (
     <ScreenLayout loading={loading}>
@@ -65,9 +64,8 @@ export default function Feed() {
         showsVerticalScrollIndicator={false}
         data={data?.seeFeed}
         renderItem={renderPhoto}
-        keyExtractor={(photo) => `${photo.id}`}
+        keyExtractor={(photo) => "" + photo.id}
       />
     </ScreenLayout>
   );
-      }
 }
