@@ -20,7 +20,6 @@ function useUser() {
       logUserOut();
     }
   }, [data]);
-  console.log(hasToken);
   return {data};
 }
 export default useUser;
