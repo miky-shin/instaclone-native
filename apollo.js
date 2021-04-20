@@ -16,6 +16,10 @@ const TOKEN = "token";
 export const logUserIn = async (token) => {
   //await AsyncStorage.setItem("token", JSON.stringify(token));
   await AsyncStorage.setItem(TOKEN, token);
+  // await AsyncStorage.multiSet([
+  //   [TOKEN, token],
+  //   ["loggedIn", "yse"],
+  // ]);
   isLoggedInVar(true);
   tokenVar(token);
 };
@@ -29,7 +33,7 @@ export const logUserOut = async () => {
 const httpLink = createHttpLink({
   uri: "http://localhost:4000/graphql",
 
-  //uri: "https://heavy-eagle-6.loca.lt/graphql",
+  //uri: "https://loud-moose-53.loca.lt/graphql",
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -44,6 +48,9 @@ const authLink = setContext((_, { headers }) => {
 //apollo3-cache-persist 설치하고 export
 export const cache = new InMemoryCache({
   typePolicies: {
+    User: {
+      keyFields: (obj) => `User:${obj.username}`,
+    },
     Query: {
       fields: {
         seeFeed: offsetLimitPagination(),
@@ -57,14 +64,13 @@ const client = new ApolloClient({
   //uri: "http://164355d0fe93.ngrok.io/graphql"
   link: authLink.concat(httpLink),
   cache,
-          // {
-          //   keyArgs: false,
-          //   merge(existing = [], incoming = []) {
-          //     console.log(existing, incoming);
-          //     return [...existing, ...incoming];
-          //   },
-          // },
-
+  // {
+  //   keyArgs: false,
+  //   merge(existing = [], incoming = []) {
+  //     console.log(existing, incoming);
+  //     return [...existing, ...incoming];
+  //   },
+  // },
 });
 
 export default client;

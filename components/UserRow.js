@@ -1,6 +1,13 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { gql, useApolloClient, useMutation, useQuery } from "@apollo/client";
+import {
+  gql,
+  makeVar,
+  useApolloClient,
+  useMutation,
+  useQuery,
+  useReactiveVar,
+} from "@apollo/client";
 import styled from "styled-components/native";
 import { colors } from "../colors";
 import useUser from "../components/hooks/useUser";
@@ -53,11 +60,46 @@ const FollowBtnText = styled.Text`
   font-weight: 600;
 `;
 
-
-
 export default function UserRow({ avatar, username, isFollowing, isMe }) {
   const navigation = useNavigation();
+
+  //console.log(username, isFollowingcache);
+
   const { data: userData } = useUser();
+  const client = useApolloClient();
+
+  const followUserCompleted = (data) => {
+    const {
+      followUser: { ok },
+    } = data;
+
+    if (!ok) {
+      return;
+    }
+    const { cache } = client;
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        totalFollowers(prev) {
+          return prev + 1;
+        },
+        isFollowing() {
+          return true;
+        },
+      },
+    });
+    const {
+      me,
+    } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev + 1;
+        },
+      },
+    });
+  };
   const unfollowUserUpdate = (cache, result) => {
     const {
       data: {
@@ -67,7 +109,6 @@ export default function UserRow({ avatar, username, isFollowing, isMe }) {
     if (!ok) {
       return;
     }
-    console.log(isFollowing);
     cache.modify({
       id: `User:${username}`,
       fields: {
@@ -79,9 +120,9 @@ export default function UserRow({ avatar, username, isFollowing, isMe }) {
         },
       },
     });
-    const {
-      me,
-    } = userData;
+
+
+    const { me } = userData;
     cache.modify({
       id: `User:${me.username}`,
       fields: {
@@ -95,7 +136,7 @@ export default function UserRow({ avatar, username, isFollowing, isMe }) {
     variables: {
       username,
     },
-    //onCompleted: followUserCompleted,
+    onCompleted: followUserCompleted,
   });
   const [unfollowUserMutation] = useMutation(UN_FOLLOW_USER_MUTATION, {
     variables: {
@@ -104,19 +145,29 @@ export default function UserRow({ avatar, username, isFollowing, isMe }) {
     update: unfollowUserUpdate,
   });
 
+  const FollowBtnFuc = () => {
+    if (isFollowing) {
+      return (
+        <FollowBtn onPress={unfollowUserMutation}>
+          <FollowBtnText>{"Unfollow"}</FollowBtnText>
+        </FollowBtn>
+      );
+    } else {
+      return (
+        <FollowBtn onPress={followUserMutation}>
+          <FollowBtnText>{"Follow"}</FollowBtnText>
+        </FollowBtn>
+      );
+    }
+  };
+
   return (
     <Wrapper>
       <Column onPress={() => navigation.navigate("Profile", { username, id })}>
         <Avatar source={{ uri: avatar }} />
         <Username>{username}</Username>
       </Column>
-      {!isMe ? (
-        <FollowBtn
-          onPress={isFollowing ? unfollowUserMutation : followUserMutation}
-        >
-          <FollowBtnText>{isFollowing ? "Unfollow" : "Follow"}</FollowBtnText>
-        </FollowBtn>
-      ) : null}
+      {!isMe ? FollowBtnFuc() : null}
     </Wrapper>
   );
 }
