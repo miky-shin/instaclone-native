@@ -53,8 +53,44 @@ const FollowBtnText = styled.Text`
   font-weight: 600;
 `;
 
+
+
 export default function UserRow({ avatar, username, isFollowing, isMe }) {
   const navigation = useNavigation();
+  const { data: userData } = useUser();
+  const unfollowUserUpdate = (cache, result) => {
+    const {
+      data: {
+        unfollowUser: { ok },
+      },
+    } = result;
+    if (!ok) {
+      return;
+    }
+    console.log(isFollowing);
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        totalFollowers(prev) {
+          return prev - 1;
+        },
+        isFollowing() {
+          return false;
+        },
+      },
+    });
+    const {
+      me,
+    } = userData;
+    cache.modify({
+      id: `User:${me.username}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev - 1;
+        },
+      },
+    });
+  };
   const [followUserMutation] = useMutation(FOLLOW_USER_MUTATION, {
     variables: {
       username,
@@ -65,7 +101,7 @@ export default function UserRow({ avatar, username, isFollowing, isMe }) {
     variables: {
       username,
     },
-    //update: unfollowUserUpdate,
+    update: unfollowUserUpdate,
   });
 
   return (

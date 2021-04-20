@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
 import { logUserOut } from "../apollo";
@@ -30,7 +30,6 @@ const Header = styled.View`
   padding: 10px 10px;
   flex-direction: row;
   align-items: center;
-  
 `;
 const Column = styled.View``;
 
@@ -47,8 +46,13 @@ const Username = styled.Text`
   color: white;
 `;
 
-export default function Me() {
+export default function Me({ navigation }) {
   const { data: userData } = useUser();
+  useEffect(() => {
+    navigation.setOptions({
+      title: userData?.me?.username,
+    });
+  }, []);
   const { data, loading } = useQuery(SEE_PROFILE_QUERY, {
     variables: {
       username: userData?.me?.username,
