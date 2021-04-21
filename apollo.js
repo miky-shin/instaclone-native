@@ -24,8 +24,9 @@ export const logUserIn = async (token) => {
   tokenVar(token);
 };
 
-export const logUserOut = async () => {
+export const logUserOut = async (logoutUser) => {
   await AsyncStorage.removeItem(TOKEN);
+  cache.evict({ id: `User:${logoutUser}` });
   isLoggedInVar(false);
   tokenVar(null);
 };

@@ -89,7 +89,7 @@ export default function Me({ navigation }) {
         </Column>
       </Header>
 
-      <TouchableOpacity onPress={() => logUserOut()}>
+      <TouchableOpacity onPress={() => logUserOut(userData?.me?.username)}>
         <Text style={{ color: "white" }}>Log out</Text>
       </TouchableOpacity>
     </View>
