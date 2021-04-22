@@ -106,10 +106,10 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
     <Container>
       <Header>
         <TouchableOpacity onPress={goToProfile}>
-          <UserAvatar resizeMode="cover" source={{ uri: user.avatar }} />
+          <UserAvatar resizeMode="cover" source={{ uri: user?.avatar }} />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToProfile}>
-          <Username>{user.username}</Username>
+          <Username>{user?.username}</Username>
         </TouchableOpacity>
       </Header>
       <File
@@ -124,11 +124,11 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
               onPress={() => toggleLike()}
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : "white"}
-              size={20}
+              size={30}
             />
           </Action>
           <Action onPress={() => navigation.navigate("Comments")}>
-            <Ionicons name="chatbubble-outline" color="white" size={19} />
+            <Ionicons name="chatbubble-outline" color="white" size={25} />
           </Action>
         </Actions>
         <Likes>
@@ -144,7 +144,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
         </Likes>
         <Caption>
           <TouchableOpacity onPress={goToProfile}>
-            <Username>{user.username}</Username>
+            <Username>{user?.username}</Username>
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
         </Caption>

@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useEffect } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import styled from "styled-components/native";
 import { logUserOut } from "../apollo";
 import { COMMENT_FRAGMENT, PHOTO_FRAGMENT } from "../components/fragments";
@@ -47,6 +47,8 @@ const Username = styled.Text`
 `;
 
 export default function Me({ navigation }) {
+  const numColumns = 3;
+  const { width } = useWindowDimensions();
   const { data: userData } = useUser();
   useEffect(() => {
     navigation.setOptions({
@@ -58,6 +60,21 @@ export default function Me({ navigation }) {
       username: userData?.me?.username,
     },
   });
+  const renderItem = ({ item: photo }) => (
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("Photo", {
+          photoId: photo.id,
+        })
+      }
+    >
+      <Image
+        source={{ uri: photo.file }}
+        style={{ width: width / numColumns, height: width / numColumns }}
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <View
       style={{
@@ -92,6 +109,13 @@ export default function Me({ navigation }) {
       <TouchableOpacity onPress={() => logUserOut(userData?.me?.username)}>
         <Text style={{ color: "white" }}>Log out</Text>
       </TouchableOpacity>
+
+      <FlatList
+        numColumns={numColumns}
+        data={data?.seeProfile?.photos}
+        keyExtractor={(photo) => "" + photo.id}
+        renderItem={renderItem}
+      />
     </View>
   );
 }
