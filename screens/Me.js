@@ -14,9 +14,10 @@ const SEE_PROFILE_QUERY = gql`
       username
       bio
       avatar
-      photos {
+      Photos {
         ...PhotoFragment
       }
+      totalPhotos
       totalFollowing
       totalFollowers
       isMe

@@ -64,7 +64,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
   const [imageHeight, setImageHeight] = useState(height);
   useEffect(() => {
     Image.getSize(file, (imageWidth, imageHeight) => {
-      setImageHeight((imageHeight * width) / imageWidth);
+      setImageHeight(height - 450);
     });
   });
 
@@ -113,7 +113,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
         </TouchableOpacity>
       </Header>
       <File
-        resizeMode="contain"
+        resizeMode="cover"
         style={{ width, height: imageHeight }}
         source={{ uri: file }}
       />
