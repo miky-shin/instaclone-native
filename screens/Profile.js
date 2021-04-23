@@ -13,6 +13,7 @@ import { PHOTO_FRAGMENT } from "../components/fragments";
 import styled from "styled-components/native";
 import FollowBtnFuc from "../components/FollowBtn";
 import { colors } from "../colors";
+import useUser from "../components/hooks/useUser";
 
 const SEE_PROFILE_QUERY = gql`
   query seeProfile($username: String!) {
@@ -114,7 +115,7 @@ export default function Profile({ navigation, route }) {
   useEffect(() => {
     if (route?.params?.username) {
       navigation.setOptions({
-        title: route.params.username,
+        title: route?.params?.username,
       });
     }
   }, []);
@@ -198,10 +199,6 @@ export default function Profile({ navigation, route }) {
           )}
         </Row>
       </Header>
-
-      <TouchableOpacity onPress={() => logUserOut(userData?.me?.username)}>
-        <Text style={{ color: "white" }}>Log out</Text>
-      </TouchableOpacity>
 
       <FlatList
         numColumns={numColumns}
