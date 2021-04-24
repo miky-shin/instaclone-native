@@ -2,9 +2,15 @@ import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import PropTypes from "prop-types";
 import styled from "styled-components/native";
-import { Image, TouchableOpacity, useWindowDimensions } from "react-native";
+import {
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useReactiveVar } from "@apollo/client";
+import Comments from "../screens/Comments";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -58,7 +64,18 @@ const ExtraContainer = styled.View`
   padding: 10px;
 `;
 
-function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
+
+
+function Photo({
+  id,
+  user,
+  caption,
+  file,
+  isLiked,
+  likes,
+  commentNumber,
+  comments,
+}) {
   const navigation = useNavigation();
   const { width, height } = useWindowDimensions();
   const [imageHeight, setImageHeight] = useState(height);
@@ -124,7 +141,7 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
               onPress={() => toggleLike()}
               name={isLiked ? "heart" : "heart-outline"}
               color={isLiked ? "tomato" : "white"}
-              size={30}
+              size={28}
             />
           </Action>
           <Action onPress={() => navigation.navigate("Comments")}>
@@ -148,6 +165,15 @@ function Photo({ id, user, caption, file, isLiked, likes, commentNumber }) {
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
         </Caption>
+        
+        <Comments
+          photoId={id}
+          author={user.username}
+          authorId={user.id}
+          caption={caption}
+          comments={comments}
+          commentNumber={commentNumber}
+        ></Comments>
       </ExtraContainer>
     </Container>
   );
@@ -165,5 +191,18 @@ Photo.propTypes = {
   isLiked: PropTypes.bool.isRequired,
   likes: PropTypes.number.isRequired,
   commentNumber: PropTypes.number.isRequired,
+
+  comments: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      payload: PropTypes.string,
+      isMine: PropTypes.bool.isRequired,
+      createdAt: PropTypes.string.isRequired,
+      user: PropTypes.shape({
+        avatar: PropTypes.string,
+        username: PropTypes.string.isRequired,
+      }),
+    })
+  ),
 };
 export default Photo;
