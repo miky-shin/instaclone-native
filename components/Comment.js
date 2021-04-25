@@ -3,8 +3,17 @@ import PropTypes from "prop-types";
 
 import { Text, TouchableOpacity, View } from "react-native";
 import styled from "styled-components/native";
-import AuthLayout from "../components/auth/AuthLayout";
+import AuthLayout from "./auth/AuthLayout";
 import { useNavigation } from "@react-navigation/native";
+import { gql, useMutation } from "@apollo/client";
+
+const DELETE_COMMENT_MUTATION = gql`
+  mutation deleteComment($id: Int!) {
+    deleteComment(id: $id) {
+      ok
+    }
+  }
+`;
 
 const CommentContainer = styled.View`
   flex-direction: row;
@@ -17,6 +26,8 @@ const DeletBtn = styled.TouchableOpacity`
 `;
 const Caption = styled.View`
   flex-direction: row;
+  align-items: flex-start;
+  margin-top: 5px;
 `;
 const CaptionText = styled.Text`
   color: white;
@@ -26,10 +37,54 @@ const Username = styled.Text`
   color: white;
   font-weight: 600;
 `;
+const UserAvatar = styled.Image`
+  margin-right: 10px;
+  width: 33px;
+  height: 33px;
+  border-radius: 25.5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+`;
 
-export default function Comment({ id, photoId, user, payload, isMine }) {
+export default function Comment({
+  id,
+  photoId,
+  user,
+  payload,
+  isMine,
+  isFeed,
+}) {
   const navigation = useNavigation();
-  const onDeleteClick = () => {};
+
+  const updateDeleteComment = (cache, result) => {
+    const {
+      data: {
+        deleteComment: { ok },
+      },
+    } = result;
+    if (ok) {
+      cache.evict({ id: `Comment:${id}` });
+      cache.modify({
+        id: `Photo:${photoId}`,
+        fields: {
+          commentNumber(prev) {
+            return prev - 1;
+          },
+        },
+      });
+    }
+  };
+  const [deleteCommentMutation] = useMutation(DELETE_COMMENT_MUTATION, {
+    variables: {
+      id,
+    },
+    update: updateDeleteComment,
+  });
+
+  const onDeleteClick = () => {
+    deleteCommentMutation();
+  };
   const goToProfile = () => {
     navigation.navigate("Profile", {
       username: user?.username,
@@ -38,6 +93,11 @@ export default function Comment({ id, photoId, user, payload, isMine }) {
   };
   return (
     <CommentContainer>
+      {isFeed ? null : (
+        <TouchableOpacity onPress={goToProfile}>
+          <UserAvatar resizeMode="cover" source={{ uri: user?.avatar }} />
+        </TouchableOpacity>
+      )}
       <Caption>
         <TouchableOpacity onPress={goToProfile}>
           <Username>{user?.username}</Username>
@@ -53,13 +113,12 @@ export default function Comment({ id, photoId, user, payload, isMine }) {
             )
           )}
         </CaptionText>
+        {isMine ? (
+          <DeletBtn onPress={onDeleteClick}>
+            <Text>✖️</Text>
+          </DeletBtn>
+        ) : null}
       </Caption>
-
-      {isMine ? (
-        <DeletBtn onPress={onDeleteClick}>
-          <Text>✖️</Text>
-        </DeletBtn>
-      ) : null}
     </CommentContainer>
   );
 }

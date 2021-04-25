@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { PHOTO_FRAGMENT } from "../components/fragments";
+import { PHOTO_FRAGMENT, COMMENT_FRAGMENT } from "../components/fragments";
 import Photo from "../components/Photo";
 import ScreenLayout from "../components/ScreenLayout";
 
@@ -22,9 +22,13 @@ const SEE_PHOTO = gql`
       }
       ...PhotoFragment
       caption
+      comments {
+        ...CommentFragment
+      }
     }
   }
   ${PHOTO_FRAGMENT}
+  ${COMMENT_FRAGMENT}
 `;
 
 

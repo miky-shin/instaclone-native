@@ -8,7 +8,7 @@ import PhotoScreen from "../screens/Photo";
 import Profile from "../screens/Profile";
 import Search from "../screens/Search";
 import Likes from "../screens/Likes";
-import Comments from "../screens/Comments";
+import PhotoComments from "../screens/PhotoComments";
 
 const Stack = createStackNavigator();
 
@@ -51,7 +51,7 @@ export default function SharedStackNav({ screenName }) {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Photo" component={PhotoScreen} />
       <Stack.Screen name="Likes" component={Likes} />
-      <Stack.Screen name="Comments" component={Comments} />
+      <Stack.Screen name="PhotoComments" component={PhotoComments} />
     </Stack.Navigator>
   );
 }

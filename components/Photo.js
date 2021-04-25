@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { gql, useMutation, useReactiveVar } from "@apollo/client";
-import Comments from "../screens/Comments";
+import Comments from "./Comments";
 
 const TOGGLE_LIKE_MUTATION = gql`
   mutation toggleLike($id: Int!) {
@@ -64,7 +64,11 @@ const ExtraContainer = styled.View`
   padding: 10px;
 `;
 
-
+const CommentCount = styled.Text`
+  opacity: 0.7;
+  margin: 5px 0px;
+  color: white;
+`;
 
 function Photo({
   id,
@@ -119,6 +123,12 @@ function Photo({
       id: user.id,
     });
   };
+  const goToComments = () => {
+    navigation.navigate("PhotoComments", {
+      photoId: id,
+      isFeed: false,
+    });
+  };
   return (
     <Container>
       <Header>
@@ -144,7 +154,7 @@ function Photo({
               size={28}
             />
           </Action>
-          <Action onPress={() => navigation.navigate("Comments")}>
+          <Action onPress={goToComments}>
             <Ionicons name="chatbubble-outline" color="white" size={25} />
           </Action>
         </Actions>
@@ -165,15 +175,24 @@ function Photo({
           </TouchableOpacity>
           <CaptionText>{caption}</CaptionText>
         </Caption>
-        
-        <Comments
-          photoId={id}
-          author={user.username}
-          authorId={user.id}
-          caption={caption}
-          comments={comments}
-          commentNumber={commentNumber}
-        ></Comments>
+        <TouchableOpacity onPress={goToComments}>
+          <CommentCount>
+            {commentNumber === 1
+              ? " 1 comment"
+              : `View all ${commentNumber} comments`}
+          </CommentCount>
+        </TouchableOpacity>
+        <Caption>
+          <Comments
+            route={{
+              params: {
+                photoId: id,
+                comments: comments,
+                isFeed: true,
+              },
+            }}
+          ></Comments>
+        </Caption>
       </ExtraContainer>
     </Container>
   );
