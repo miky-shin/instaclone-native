@@ -45,7 +45,8 @@ export default function PhotoScreen({ route }) {
     setRefreshing(false);
   };
   return (
-    <ScreenLayout>
+    <ScreenLayout loading={loading}>
+
       <ScrollView
         refreshControl={
           <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />

@@ -4,10 +4,37 @@ import { Image, View } from "react-native";
 import TabIcon from "../components/nav/TabIcon";
 import SharedStackNav from "./SharedStackNav";
 import useUser from "../components/hooks/useUser";
+import { createStackNavigator } from "@react-navigation/stack";
+import PhotoComments from "../screens/PhotoComments";
 
 const Tabs = createBottomTabNavigator();
+const Stack = createStackNavigator();
 
 export default function LoggedInNav() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerBackTitleVisible: false,
+        headerTintColor: "white",
+        headerStyle: {
+          shadowColor: "rgba(255,255,255,0.3)",
+          backgroundColor: "black",
+        },
+      }}
+    >
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="AppHome"
+        component={LoggedInNav1}
+      />
+      <Stack.Screen name="PhotoComments" component={PhotoComments} />
+    </Stack.Navigator>
+  );
+}
+
+function LoggedInNav1() {
   const { data } = useUser();
   return (
     <Tabs.Navigator
