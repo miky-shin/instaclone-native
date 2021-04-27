@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FlatList, Text, useWindowDimensions, View } from "react-native";
+import { FlatList, Text, useWindowDimensions, View, KeyboardAvoidingView } from "react-native";
 import styled from "styled-components/native";
 import Comment from "../components/Comment";
 import Comments from "../components/Comments";
@@ -116,7 +116,10 @@ export default function PhotoComments({ navigation, route }) {
   const { register, handleSubmit, setValue, watch, getValues } = useForm();
   const createCommentUpdate = (cache, result) => {
     const { payload } = getValues();
+    console.log("1", payload);
     setValue("payload", "");
+    console.log("2", payload);
+
     const {
       data: {
         createComment: { ok, id },
@@ -190,7 +193,7 @@ export default function PhotoComments({ navigation, route }) {
         flex: 1,
       }}
     >
-      <Caption style={{ flex: 9 }}>
+      <Caption style={{ flex: 8 }}>
         <CommentsContainer>
           <FlatList
             refreshing={refreshing}
@@ -203,6 +206,18 @@ export default function PhotoComments({ navigation, route }) {
           />
         </CommentsContainer>
       </Caption>
+      <KeyboardAvoidingView
+          style={{
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "black",
+            flex:2,
+          }}
+          behavior="padding"
+          keyboardVerticalOffset={85}
+          placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
+        >
       <InputBar style={{ backgroundColor: "black", flex: 1 }}>
         <UserAvatar resizeMode="cover" source={{ uri: userData?.me?.avatar }} />
         <Input
@@ -215,8 +230,11 @@ export default function PhotoComments({ navigation, route }) {
           autoCorrect={false}
           onChangeText={(text) => setValue("payload", text)}
           onSubmitEditing={handleSubmit(onValid)}
+          clearTextOnFocus={true}
+          clearButtonMode="always"
         />
       </InputBar>
+      </KeyboardAvoidingView>
     </View>
   );
 }
