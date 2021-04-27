@@ -1,8 +1,15 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { FlatList, Text, useWindowDimensions, View, KeyboardAvoidingView } from "react-native";
-import styled from "styled-components/native";
+import {
+  FlatList,
+  Text,
+  useWindowDimensions,
+  View,
+  KeyboardAvoidingView,
+} from "react-native";
+import styled, { withTheme } from "styled-components/native";
+import { colors } from "../colors";
 import Comment from "../components/Comment";
 import Comments from "../components/Comments";
 import { COMMENT_FRAGMENT } from "../components/fragments";
@@ -47,9 +54,8 @@ const Caption = styled.View`
 `;
 
 const CommentsContainer = styled.View`
-  background-color: black;
   margin-top: 0px;
-  flex: 1;
+  flex: 8;
   padding: 3px 0px;
 `;
 
@@ -60,17 +66,29 @@ const InputBar = styled.View`
   justify-content: center;
   padding: 17px;
 `;
-
-const Input = styled.TextInput`
-  color: white;
-  width: ${(props) => props.width / 1.4}px;
-  padding: 13px 10px;
+const InputBorder = styled.View`
   border-radius: 25px;
   border-color: rgba(255, 255, 255, 0.3);
   border-width: 0.5px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 `;
+
+const Input = styled.TextInput`
+  color: white;
+  width: ${(props) => props.width / 1.8}px;
+  padding: 13px 10px;
+`;
+
+const InputBtn = styled.TouchableOpacity`
+  padding: 14px 10px;
+  border-radius: 3px;
+  width: 20%;
+`;
+
 const UserAvatar = styled.Image`
-  margin-right: 20px;
+  margin-right: 10px;
   width: 40px;
   height: 40px;
   border-radius: 25.5px;
@@ -82,6 +100,7 @@ const UserAvatar = styled.Image`
 `;
 
 export default function PhotoComments({ navigation, route }) {
+  const [text, onChangeText] = useState("");
   const { data: userData } = useUser();
   const { width } = useWindowDimensions();
 
@@ -116,9 +135,7 @@ export default function PhotoComments({ navigation, route }) {
   const { register, handleSubmit, setValue, watch, getValues } = useForm();
   const createCommentUpdate = (cache, result) => {
     const { payload } = getValues();
-    console.log("1", payload);
     setValue("payload", "");
-    console.log("2", payload);
 
     const {
       data: {
@@ -176,6 +193,7 @@ export default function PhotoComments({ navigation, route }) {
     register("payload", { required: true });
   }, []);
   const onValid = (data) => {
+    onChangeText("");
     const { payload } = data;
     if (createloading) {
       return;
@@ -191,6 +209,7 @@ export default function PhotoComments({ navigation, route }) {
     <View
       style={{
         flex: 1,
+        backgroundColor:"black",
       }}
     >
       <Caption style={{ flex: 8 }}>
@@ -199,41 +218,52 @@ export default function PhotoComments({ navigation, route }) {
             refreshing={refreshing}
             onRefresh={onRefresh}
             style={{ width: "100%" }}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={true}
             data={data?.seePhoto?.comments}
             renderItem={renderComment}
             keyExtractor={(comment) => "" + comment.id}
           />
         </CommentsContainer>
-      </Caption>
+        </Caption>
       <KeyboardAvoidingView
-          style={{
-            width: "100%",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "black",
-            flex:2,
-          }}
-          behavior="padding"
-          keyboardVerticalOffset={85}
-          placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
-        >
-      <InputBar style={{ backgroundColor: "black", flex: 1 }}>
-        <UserAvatar resizeMode="cover" source={{ uri: userData?.me?.avatar }} />
-        <Input
-          width={width}
-          placeholderTextColor="grey"
-          placeholder="Add a comment..."
-          autoCapitalize="none"
-          returnKeyLabel="done"
-          returnKeyType="done"
-          autoCorrect={false}
-          onChangeText={(text) => setValue("payload", text)}
-          onSubmitEditing={handleSubmit(onValid)}
-          clearTextOnFocus={true}
-          clearButtonMode="always"
-        />
-      </InputBar>
+        style={{
+          width: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "black",
+        }}
+        behavior="padding"
+        keyboardVerticalOffset={85}
+        placeholderTextColor={"rgba(255, 255, 255, 0.7)"}
+      >
+        <InputBar>
+          <UserAvatar
+            resizeMode="cover"
+            source={{ uri: userData?.me?.avatar }}
+          />
+          <InputBorder>
+            <Input
+              value={text}
+              width={width}
+              placeholderTextColor="grey"
+              placeholder="Add a comment..."
+              autoCapitalize="none"
+              returnKeyLabel="done"
+              returnKeyType="done"
+              autoCorrect={false}
+              onChangeText={(text) => {
+                setValue("payload", text);
+                onChangeText(text);
+              }}
+              onSubmitEditing={handleSubmit(onValid)}
+              clearTextOnFocus={true}
+              clearButtonMode="always"
+            ></Input>
+            <InputBtn onPress={handleSubmit(onValid)}>
+              <Text style={{ color: `${colors.blue}` }}>post</Text>
+            </InputBtn>
+          </InputBorder>
+        </InputBar>
       </KeyboardAvoidingView>
     </View>
   );

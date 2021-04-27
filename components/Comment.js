@@ -17,6 +17,8 @@ const DELETE_COMMENT_MUTATION = gql`
 
 const CommentContainer = styled.View`
   flex-direction: row;
+  width: 100%;
+  padding-right: 18px;
 `;
 const CommentPayload = styled.Text`
   color: white;
@@ -28,6 +30,7 @@ const Caption = styled.View`
   flex-direction: row;
   align-items: flex-start;
   margin-top: 5px;
+  width: 73%;
 `;
 const CaptionText = styled.Text`
   color: white;
