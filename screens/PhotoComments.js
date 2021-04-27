@@ -256,8 +256,10 @@ export default function PhotoComments({ navigation, route }) {
                 onChangeText(text);
               }}
               onSubmitEditing={handleSubmit(onValid)}
-              clearTextOnFocus={true}
+              // clearTextOnFocus={true}
               clearButtonMode="always"
+              multiline={true}
+              blurOnSubmit={true}
             ></Input>
             <InputBtn onPress={handleSubmit(onValid)}>
               <Text style={{ color: `${colors.blue}` }}>post</Text>
