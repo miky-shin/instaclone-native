@@ -32,9 +32,9 @@ export const logUserOut = async (logoutUser) => {
 };
 
 const httpLink = createHttpLink({
-  //uri: "http://localhost:4000/graphql",
+  uri: "http://localhost:4000/graphql",
 
-  uri: "https://gangsgram.herokuapp.com/graphql",
+  //uri: "https://gangsgram.herokuapp.com/graphql",
   //uri:"https://neat-warthog-3.loca.lt/graphql",
 });
 

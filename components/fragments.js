@@ -31,3 +31,14 @@ export const USER_FRAGMENT = gql`
     isMe
   }
 `;
+
+export const ROOM_FRAGMENT = gql `
+fragment RoomFragment on Room {
+   id
+   unreadTotal
+   users {
+     username
+     avatar
+   }
+}
+`;
