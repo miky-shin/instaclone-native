@@ -37,7 +37,8 @@ export const logUserOut = async (logoutUser) => {
 };
 
 const wsLink = new WebSocketLink({
-  uri: "ws://localhost:4000/graphql",
+  uri: "http://localhost:4000/graphql",
+  //uri: "ws://gangsgram.herokuapp.com/graphql",
   options: {
     reconnect: true,
     connectionParams: ()=> ({

@@ -3,13 +3,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import PhotoComments from "../screens/PhotoComments";
 import MessagesNav from "../navigators/MessagesNav";
 import TabNav from "../navigators/TabNav";
+import UploadNav from "./UploadNav";
 
 const Stack = createStackNavigator();
 
 export default function LoggedInNav() {
   return (
     <Stack.Navigator
-      // mode="modal"
+      mode="modal"
+      headerMode="none"
       screenOptions={{
         headerBackTitleVisible: false,
         headerTintColor: "white",
@@ -26,6 +28,7 @@ export default function LoggedInNav() {
         }}
         component={TabNav}
       />
+      <Stack.Screen name="Upload" component={UploadNav} />
       <Stack.Screen name="PhotoComments" component={PhotoComments} />
       <Stack.Screen
         name="Messages"

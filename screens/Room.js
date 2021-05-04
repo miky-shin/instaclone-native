@@ -83,11 +83,12 @@ const Message = styled.Text`
 
 const TextInput = styled.TextInput`
   border: 1.5px solid rgba(255, 255, 255, 0.5);
-  padding: 10px 20px;
+  padding: 20px 20px;
   color: white;
   border-radius: 1000px;
   width: 90%;
   margin-right: 10px;
+  margin-left: 10px;
 `;
 
 const InputContainer = styled.View`
@@ -159,13 +160,12 @@ export default function Rooms({ route, navigation }) {
     },
   });
   const client = useApolloClient();
-  const updateQuery = (prevQuery, options) => {
-    const {
-      subscriptionData: {
-        data: { roomUpdates: message },
-      },
-    } = options;
-    if (message.id) {
+  const updateQuery = (prevQuery, { subscriptionData }) => {
+    if (!subscriptionData?.data) {
+      return prevQuery;
+    }
+    const message = subscriptionData?.data?.roomUpdates;
+    if (message?.id && message?.user?.username !== meData?.me?.username) {
       const incommingMessage = client.cache.writeFragment({
         fragment: gql`
           fragment NewMessage on Message {
@@ -181,7 +181,7 @@ export default function Rooms({ route, navigation }) {
         data: message,
       });
       client.cache.modify({
-        id: `Room:${route.params.id}`,
+        id: `Room:${route?.params?.id}`,
         fields: {
           messages(prev) {
             const existingMessage = prev.find(
