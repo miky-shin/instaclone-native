@@ -5,6 +5,7 @@ import { useEffect } from "react/cjs/react.development";
 import {
   FlatList,
   Image,
+  StatusBar,
   TouchableOpacity,
   useWindowDimensions,
 } from "react-native";
@@ -64,7 +65,13 @@ export default function SelectPhoto({ navigation }) {
     }
   };
   const HeaderRight = () => (
-    <TouchableOpacity>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate("UploadForm", {
+          file: chosenPhoto,
+        })
+      }
+    >
       <HeaderRightText>Next</HeaderRightText>
     </TouchableOpacity>
   );
@@ -97,6 +104,7 @@ export default function SelectPhoto({ navigation }) {
   );
   return (
     <Container>
+
       <Top>
         {chosenPhoto !== "" ? (
           <Image

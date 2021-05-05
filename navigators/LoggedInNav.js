@@ -4,6 +4,7 @@ import PhotoComments from "../screens/PhotoComments";
 import MessagesNav from "../navigators/MessagesNav";
 import TabNav from "../navigators/TabNav";
 import UploadNav from "./UploadNav";
+import UploadForm from "../screens/UploadForm";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ export default function LoggedInNav() {
         component={TabNav}
       />
       <Stack.Screen name="Upload" component={UploadNav} />
+      <Stack.Screen name="UploadForm" component={UploadForm} />
       <Stack.Screen name="PhotoComments" component={PhotoComments} />
       <Stack.Screen
         name="Messages"
