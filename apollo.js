@@ -11,7 +11,9 @@ import {
   getMainDefinition,
   offsetLimitPagination,
 } from "@apollo/client/utilities";
+import { onError } from "@apollo/client/link/error";
 import { WebSocketLink } from "@apollo/client/link/ws";
+import { createUploadLink } from "apollo-upload-client";
 
 export const isLoggedInVar = makeVar(false);
 export const tokenVar = makeVar("");
@@ -41,7 +43,7 @@ const wsLink = new WebSocketLink({
   //uri: "ws://gangsgram.herokuapp.com/graphql",
   options: {
     reconnect: true,
-    connectionParams: ()=> ({
+    connectionParams: () => ({
       token: tokenVar(),
     }),
   },
@@ -56,14 +58,29 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
+const onErrorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors) {
+    console.log(`graphQLErrors`, graphQLErrors);
+  }
+  if (networkError) {
+    console.log(`networkError`, networkError);
+  }
+});
+
 const httpLink = createHttpLink({
+  //uri: "http://localhost:4000/graphql",
+  //uri: "https://gangsgram.herokuapp.com/graphql",
+  //uri:"https://neat-warthog-3.loca.lt/graphql",
+});
+
+const uploadHttpLink = createUploadLink({
   uri: "http://localhost:4000/graphql",
 
   //uri: "https://gangsgram.herokuapp.com/graphql",
   //uri:"https://neat-warthog-3.loca.lt/graphql",
 });
 
-const httpLinks = authLink.concat(httpLink);
+const httpLinks = authLink.concat(onErrorLink).concat(uploadHttpLink);
 
 const splitLink = split(
   ({ query }) => {

@@ -112,6 +112,9 @@ export default function TakePhoto({ navigation }) {
       //const asset = await MediaLibrary.createAssetAsync(takenPhoto);
       await MediaLibrary.saveToLibraryAsync(takenPhoto);
     }
+    navigation.navigate("UploadForm", {
+      file: takenPhoto,
+    })
     //go to upload
   };
   const onUpload = () => {
